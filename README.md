@@ -137,3 +137,10 @@ Server will start on your configured PORT.
   "dueDate": "2025-07-18T00:00:00.000Z"
 }
 ```
+# Technologies Used
+- Node.js
+- Express
+- MongoDB & Mongoose
+- dotenv
+- nodemon
+- Validator / Custom Middleware
