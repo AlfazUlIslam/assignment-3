@@ -3,7 +3,7 @@ A Node.js/Express REST API for managing books, borrowing activity, and inventory
 
 # Features
 - CRUD operations for books
-- Borrow and return books with due dates
+- Borrow books with due dates
 - Mongoose models with validations
 - Aggregation summaries for borrow data
 - RESTful API architecture
