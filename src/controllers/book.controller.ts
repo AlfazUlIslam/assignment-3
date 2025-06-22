@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Book from "../models/book.model";
+import { isValidGenre, isValidISBN } from "../utils";
 
 // @desc      Create a book
 // @method    POST
@@ -7,6 +8,22 @@ import Book from "../models/book.model";
 export const createBook = async (req: Request, res: Response) => {
     try {
         const body = req.body;
+
+        if (!isValidGenre(body.genre)) {
+          res.status(404).json({
+            success: false,
+            message: "Only following genres are allowed: FICTION, NON_FICTION, SCIENCE, HISTORY, BIOGRAPHY, FANTASY."
+          });
+          return;
+        }
+
+        if (!isValidISBN(body.isbn)) {
+          res.status(404).json({
+            success: false,
+            message: "ISBN must be a 9-digit number that does not start with 0."
+          });
+          return;
+        };
 
         const book = await Book.create(body);
 
