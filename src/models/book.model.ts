@@ -20,10 +20,31 @@ const bookSchema = new Schema<IBook, IBookModelType>({
         min: [0, "Copies must be a positive number"],
         required: true 
     },
-    available: { type: Boolean, default: true }
+    available: { type: Boolean, default: true },
+    createdAt: { type: Date, default: () => Date.now() },
+    updatedAt: { type: Date, default: () => Date.now() },
 }, {
-    timestamps: true,
     versionKey: false
+});
+
+// Pre-save middleware
+bookSchema.pre<IBook>('save', function (next) {
+  this.updatedAt = new Date();
+  next();
+});
+
+// Pre-update middleware
+bookSchema.pre('findOneAndUpdate', function (next) {
+  this.set({ updatedAt: new Date() });
+  next();
+});
+bookSchema.pre('updateOne', function (next) {
+  this.set({ updatedAt: new Date() });
+  next();
+});
+bookSchema.pre('updateMany', function (next) {
+  this.set({ updatedAt: new Date() });
+  next();
 });
 
 bookSchema.static('updateAvailability', async function (bookId: Schema.Types.ObjectId) {
