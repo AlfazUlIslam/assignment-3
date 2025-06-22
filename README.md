@@ -27,6 +27,8 @@ A Node.js/Express REST API for managing books, borrowing activity, and inventory
     ├── routes/
         ├── book.routes.ts
         ├── borrow.routes.ts
+    ├── utils/
+        ├── index.ts
     ├── app.ts
     ├── main.ts
 ├── .env
@@ -142,4 +144,5 @@ Server will start on your configured PORT.
 - Express
 - MongoDB & Mongoose
 - dotenv
+- TypeScript
 - TypeScript Execute (tsx)
