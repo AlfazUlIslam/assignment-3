@@ -67,6 +67,10 @@ export const borrowABook = async (req: Request, res: Response) => {
 // @endpoint /api/borrow
 export const summBorrBooks = async (req: Request, res: Response) => {
     try {
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = 10;
+        const skip = (page - 1) * limit;
+
         const summary = await Borrow.aggregate([
             {
                 $group: {
@@ -94,14 +98,35 @@ export const summBorrBooks = async (req: Request, res: Response) => {
                     },
                     totalQuantity: 1
                 }
+            },
+            {
+                $facet: {
+                    metadata: [{ $count: "total" }],
+                    data: [
+                        { $skip: skip },
+                        { $limit: limit }
+                    ]
+                }
             }
         ]);
 
-    res.status(200).json({
-      success: true,
-      message: "Borrowed books summary retrieved successfully",
-      data: summary
-    });
+        const total = summary[0]?.metadata[0]?.total || 0;
+        const totalPages = Math.ceil(total / limit);
+        const data = summary[0]?.data || [];
+
+        res.json({
+            data,
+            page,
+            totalPages,
+            totalItems: total,
+        });
+        return;
+
+        // res.status(200).json({
+        // success: true,
+        // message: "Borrowed books summary retrieved successfully",
+        // data: summary
+        // });
     return;
     } catch (error) {
         if (error instanceof Error) {
