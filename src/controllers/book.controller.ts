@@ -55,41 +55,11 @@ export const createBook = async (req: Request, res: Response) => {
 // @endpoint  /api/books
 export const getAllBooks = async (req: Request, res: Response) => {
     try {
-      /*
-      const { filter, sortBy, sort, limit } = req.query;
-
-      // Narrowing down type of sortProp
-      const sortProp = typeof sortBy === 'string' ? sortBy : 'createdAt';
-
-      // Narrowing down type of sortOrder
-      let sortOrder: 1 | -1 = 1;
-
-      if (sort && typeof sort === "string") {
-          sortOrder = sort.toLowerCase() === "asc" ? 1 : -1;
-      }
-
-      // Limit defaults to 10
-      const limitParam = typeof limit === 'string' ? parseInt(limit) : 10;
-
-      const books = await Book
-        .find({ genre: filter })
-        .sort({ [sortProp]: sortOrder })
-        .limit(limitParam);
-
-      
-      res.status(200).json({
-          success: true,
-          message: "Books retrieved successfully",
-          data: books
-      });
-      return;
-      */
-
       const page = parseInt(req.query.page as string) || 1;
       const limit = 10;
       const skip = (page - 1) * limit;
 
-      const [users, total] = await Promise.all([
+      const [books, total] = await Promise.all([
         Book.find().skip(skip).limit(limit),
         Book.countDocuments(),
       ]);
@@ -97,7 +67,7 @@ export const getAllBooks = async (req: Request, res: Response) => {
       const totalPages = Math.ceil(total / limit);
 
       res.json({
-        data: users,
+        data: books,
         page,
         totalPages,
         totalItems: total,
