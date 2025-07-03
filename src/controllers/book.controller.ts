@@ -139,20 +139,33 @@ export const updateBook = async (req: Request, res: Response) => {
     const body = req.body;
 
     const book = await Book.findByIdAndUpdate(bookId, body, {new: true});
-
-    if (book) {
-      res.status(200).json({
-        success: true,
-        message: "Book updated successfully",
-        data: book
-      });
-    } else {
+    
+    if (!book) {
       res.status(404).json({
         success: false,
         message: "Book not found",
         data: null
       });
-    }
+      return;
+    };
+    
+    if (book) {
+      // await Book.updateAvailability(book._id);
+      if (book.copies === 0) {
+        book.available = false;
+        await book.save();
+      };
+      if (book.copies > 0) {
+        book.available = true;
+        await book.save();
+      };
+    };
+
+    res.status(200).json({
+      success: true,
+      message: "Book updated successfully",
+      data: book
+    });
     return;
   } catch (error) {
     if (error instanceof Error) {

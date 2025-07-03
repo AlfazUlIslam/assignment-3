@@ -17,6 +17,7 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 
 app.use("/api/books", bookRouter);
 app.use("/api/borrow", borrowRouter);

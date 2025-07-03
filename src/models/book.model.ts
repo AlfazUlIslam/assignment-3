@@ -54,6 +54,10 @@ bookSchema.static('updateAvailability', async function (bookId: Schema.Types.Obj
         book.available = false;
         await book.save();
     }
+    if (book.copies > 0) {
+      book.available = true;
+      await book.save();
+    }
     return book;
 });
 
