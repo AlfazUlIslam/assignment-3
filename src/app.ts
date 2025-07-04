@@ -4,7 +4,7 @@ import bookRouter from "./routes/book.routes";
 import borrowRouter from "./routes/borrow.routes";
 
 const app = express();
-const allowedOrigins = ['http://localhost:5173'];
+const allowedOrigins = ['http://localhost:5173','http://localhost:4173'];
 
 app.use(cors({
   origin: (origin, callback) => {
