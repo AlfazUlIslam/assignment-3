@@ -7,9 +7,11 @@ import { isValidGenre, isValidISBN } from "../utils";
 // @endpoint  /api/books
 export const createBook = async (req: Request, res: Response) => {
     try {
-        const body = req.body;
+        // const body = req.body;
+        const { title, author, genre, isbn, description, copies } = req.body;
 
-        if (!isValidGenre(body.genre)) {
+        // body.
+        if (!isValidGenre(genre)) {
           res.status(404).json({
             success: false,
             message: "Only following genres are allowed: FICTION, NON_FICTION, SCIENCE, HISTORY, BIOGRAPHY, FANTASY."
@@ -17,7 +19,8 @@ export const createBook = async (req: Request, res: Response) => {
           return;
         }
 
-        if (!isValidISBN(body.isbn)) {
+        // body.
+        if (!isValidISBN(isbn)) {
           res.status(404).json({
             success: false,
             message: "ISBN must be a 9-digit number that does not start with 0."
@@ -25,7 +28,16 @@ export const createBook = async (req: Request, res: Response) => {
           return;
         };
 
-        const book = await Book.create(body);
+        // body
+        const book = await Book.create({
+          title,
+          author,
+          genre,
+          isbn,
+          description,
+          copies,
+          available: copies > 0 ? true : false
+        });
 
         res.status(201).json({
             success: true,
