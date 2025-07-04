@@ -23,7 +23,7 @@ export const createBook = async (req: Request, res: Response) => {
         if (!isValidISBN(isbn)) {
           res.status(404).json({
             success: false,
-            message: "ISBN must be a 9-digit number that does not start with 0."
+            message: "ISBN must be a 13-digit number that does not start with 0."
           });
           return;
         };
