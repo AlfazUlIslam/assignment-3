@@ -7,11 +7,33 @@ import { isValidGenre, isValidISBN } from "../utils";
 // @endpoint  /api/books
 export const createBook = async (req: Request, res: Response) => {
     try {
-        // const body = req.body;
-        const { title, author, genre, isbn, description, copies } = req.body;
+        const body = req.body;
 
-        // body.
-        if (!isValidGenre(genre)) {
+        if (!body.title) {
+          res.status(404).json({
+            success: false,
+            message: "Book title required"
+          });
+          return;
+        }
+        
+        if (!body.author) {
+          res.status(404).json({
+            success: false,
+            message: "Book author required"
+          });
+          return;
+        }
+        
+        if (!body.description) {
+          res.status(404).json({
+            success: false,
+            message: "Book description required"
+          });
+          return;
+        }
+
+        if (!isValidGenre(body.genre)) {
           res.status(404).json({
             success: false,
             message: "Only following genres are allowed: FICTION, NON_FICTION, SCIENCE, HISTORY, BIOGRAPHY, FANTASY."
@@ -19,8 +41,7 @@ export const createBook = async (req: Request, res: Response) => {
           return;
         }
 
-        // body.
-        if (!isValidISBN(isbn)) {
+        if (!isValidISBN(body.isbn)) {
           res.status(404).json({
             success: false,
             message: "ISBN must be a 13-digit number that does not start with 0."
@@ -28,15 +49,9 @@ export const createBook = async (req: Request, res: Response) => {
           return;
         };
 
-        // body
         const book = await Book.create({
-          title,
-          author,
-          genre,
-          isbn,
-          description,
-          copies,
-          available: copies > 0 ? true : false
+          ...body,
+          available: body.copies > 0 ? true : false
         });
 
         res.status(201).json({
@@ -150,7 +165,52 @@ export const updateBook = async (req: Request, res: Response) => {
     const bookId = req.params.bookId;
     const body = req.body;
 
-    const book = await Book.findByIdAndUpdate(bookId, body, {new: true});
+    if (!body.title) {
+      res.status(404).json({
+        success: false,
+        message: "Book title required"
+      });
+      return;
+    }
+    
+    if (!body.author) {
+      res.status(404).json({
+        success: false,
+        message: "Book author required"
+      });
+      return;
+    }
+    
+    if (!body.description) {
+      res.status(404).json({
+        success: false,
+        message: "Book description required"
+      });
+      return;
+    }
+
+    if (!isValidGenre(body.genre)) {
+      res.status(404).json({
+        success: false,
+        message: "Only following genres are allowed: FICTION, NON_FICTION, SCIENCE, HISTORY, BIOGRAPHY, FANTASY."
+      });
+      return;
+    }
+
+    if (!isValidISBN(body.isbn)) {
+      res.status(404).json({
+        success: false,
+        message: "ISBN must be a 13-digit number that does not start with 0."
+      });
+      return;
+    };
+
+    const updateData = {
+          ...body,
+          available: body.copies > 0 ? true : false
+    };
+
+    const book = await Book.findByIdAndUpdate(bookId, updateData, {new: true});
     
     if (!book) {
       res.status(404).json({
@@ -161,17 +221,16 @@ export const updateBook = async (req: Request, res: Response) => {
       return;
     };
     
-    if (book) {
-      // await Book.updateAvailability(book._id);
-      if (book.copies === 0) {
-        book.available = false;
-        await book.save();
-      };
-      if (book.copies > 0) {
-        book.available = true;
-        await book.save();
-      };
-    };
+    // if (book) {
+    //   if (book.copies === 0) {
+    //     book.available = false;
+    //     await book.save();
+    //   };
+    //   if (book.copies > 0) {
+    //     book.available = true;
+    //     await book.save();
+    //   };
+    // };
 
     res.status(200).json({
       success: true,
